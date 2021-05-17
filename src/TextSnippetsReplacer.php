@@ -2,6 +2,7 @@
 
 namespace MasterDmx\LaravelTextSnippets;
 
+use Illuminate\Support\Collection;
 use MasterDmx\LaravelTextSnippets\Contracts\HasAttributesWithSnippets;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver;
 
@@ -61,5 +62,20 @@ class TextSnippetsReplacer
         }
 
         return $entity;
+    }
+
+    /**
+     * Заменяет сниппеты в публичных аттрибутах каждого элемента коллекции (клонирование коллекции и всех элементов)
+     *
+     * @param Collection $collection
+     */
+    public function replaceFromCollection(Collection $collection)
+    {
+        $collection = clone $collection;
+        $collection = $collection->map(function ($item) {
+            return $this->replaceFromPublicAttributes($item);
+        });
+
+        return $collection;
     }
 }
